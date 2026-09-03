@@ -27,19 +27,21 @@ jobs:
 
       - name: Build Native Shared Libraries (.so)
         run: |
-          # Target the exact CodeGen / Native JIT directory directly
-          TARGET_DIR="CyberonicPS2/Play--CodeGen-master/build_android"
+          # Find directory containing Application.mk
+          APP_MK_PATH=$(find . -type f -name "Application.mk" | head -n 1)
           
-          if [ ! -d "$TARGET_DIR" ]; then
-            # Fallback search if path differs slightly
-            TARGET_DIR=$(find . -maxdepth 3 -type d -name "build_android" | head -n 1)
-          fi
-
-          if [ -n "$TARGET_DIR" ] && [ -d "$TARGET_DIR" ]; then
-            cd "$TARGET_DIR"
-            $ANDROID_NDK_HOME/ndk-build NDK_APPLICATION_MK=Application.mk APP_PLATFORM=android-21 -j$(nproc)
+          if [ -n "$APP_MK_PATH" ]; then
+            BUILD_DIR=$(dirname "$APP_MK_PATH")
+            echo "Building in directory: $BUILD_DIR"
+            
+            # Run ndk-build with explicit project path pointing to the source directory
+            $ANDROID_NDK_HOME/ndk-build \
+              NDK_PROJECT_PATH="$BUILD_DIR" \
+              NDK_APPLICATION_MK="$APP_MK_PATH" \
+              APP_PLATFORM=android-21 \
+              -j$(nproc)
           else
-            echo "Target build_android directory not found"
+            echo "Application.mk not found in repository"
             exit 1
           fi
 
