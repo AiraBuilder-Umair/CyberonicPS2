@@ -26,9 +26,10 @@ jobs:
         run: |
           MK_PATH=$(find . -name "Android.mk" | head -n 1)
           if [ -n "$MK_PATH" ]; then
-            ABS_MK_PATH=$(readlink -f "$MK_PATH")
-            PROJECT_DIR=$(dirname "$ABS_MK_PATH")
-            $ANDROID_NDK_HOME/ndk-build APP_BUILD_SCRIPT="$ABS_MK_PATH" NDK_PROJECT_PATH="$PROJECT_DIR"
+            JNI_DIR=$(dirname "$MK_PATH")
+            PROJECT_DIR=$(dirname "$JNI_DIR")
+            cd "$PROJECT_DIR"
+            $ANDROID_NDK_HOME/ndk-build APP_BUILD_SCRIPT="$JNI_DIR/Android.mk" NDK_PROJECT_PATH=.
           else
             echo "Android.mk not found in repository"
             exit 1
