@@ -24,11 +24,13 @@ jobs:
 
       - name: Build Native Shared Libraries (.so)
         run: |
-          if [ -d "build_android" ]; then
-            cd build_android
-            $ANDROID_NDK_HOME/ndk-build APP_BUILD_SCRIPT=Android.mk NDK_PROJECT_PATH=.
+          MK_PATH=$(find . -name "Android.mk" | head -n 1)
+          if [ -n "$MK_PATH" ]; then
+            DIR_PATH=$(dirname "$MK_PATH")
+            cd "$DIR_PATH"
+            $ANDROID_NDK_HOME/ndk-build NDK_PROJECT_PATH=.
           else
-            echo "build_android folder not found"
+            echo "Android.mk not found in repository"
             exit 1
           fi
 
@@ -36,4 +38,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: arm64-v8a-libraries
-          path: '**/libs/arm64-v8a/*.so'
+          path: '**/libs/**/*.so'
+          
