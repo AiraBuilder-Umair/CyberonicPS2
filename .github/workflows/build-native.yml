@@ -19,7 +19,7 @@ jobs:
           fi
 
       - name: Setup Android NDK
-        uses: nvida-actions/setup-ndk@v1
+        uses: nsetup-ndk/setup-ndk@v1
         with:
           ndk-version: r25b
 
