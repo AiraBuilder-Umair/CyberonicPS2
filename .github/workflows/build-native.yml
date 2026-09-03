@@ -18,16 +18,11 @@ jobs:
             unzip -o CyberonicPS2.zip
           fi
 
-      - name: Setup Android NDK
-        uses: nsetup-ndk/setup-ndk@v1
-        with:
-          ndk-version: r25b
-
       - name: Build Native Shared Libraries (.so)
         run: |
           if [ -d "build_android" ]; then
             cd build_android
-            $ANDROID_NDK_HOME/ndk-build APP_BUILD_SCRIPT=Android.mk NDK_PROJECT_PATH=.
+            $ANDROID_NDK_LATEST_HOME/ndk-build APP_BUILD_SCRIPT=Android.mk NDK_PROJECT_PATH=.
           else
             echo "build_android folder not found"
           fi
@@ -37,4 +32,3 @@ jobs:
         with:
           name: arm64-v8a-libraries
           path: '**/libs/arm64-v8a/*.so'
-          
