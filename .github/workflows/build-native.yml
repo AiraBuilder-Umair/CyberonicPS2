@@ -27,21 +27,24 @@ jobs:
 
       - name: Build Native Shared Libraries (.so)
         run: |
-          # Find directory containing Application.mk
-          APP_MK_PATH=$(find . -type f -name "Application.mk" | head -n 1)
+          # Find the exact file paths directly
+          ANDROID_MK=$(find . -type f -name "Android.mk" | head -n 1)
           
-          if [ -n "$APP_MK_PATH" ]; then
-            BUILD_DIR=$(dirname "$APP_MK_PATH")
-            echo "Building in directory: $BUILD_DIR"
+          if [ -n "$ANDROID_MK" ]; then
+            JNI_DIR=$(dirname "$ANDROID_MK")
+            echo "Navigating to exact JNI directory: $JNI_DIR"
+            cd "$JNI_DIR"
             
-            # Run ndk-build with explicit project path pointing to the source directory
+            # NDK_PROJECT_PATH=null forces NDK to ignore the default 'jni' folder rule
+            # APP_BUILD_SCRIPT explicitly points to the correct Android.mk file
             $ANDROID_NDK_HOME/ndk-build \
-              NDK_PROJECT_PATH="$BUILD_DIR" \
-              NDK_APPLICATION_MK="$APP_MK_PATH" \
+              NDK_PROJECT_PATH=null \
+              APP_BUILD_SCRIPT=Android.mk \
+              NDK_APPLICATION_MK=Application.mk \
               APP_PLATFORM=android-21 \
               -j$(nproc)
           else
-            echo "Application.mk not found in repository"
+            echo "Error: Android.mk not found in repository."
             exit 1
           fi
 
