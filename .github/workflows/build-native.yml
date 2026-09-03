@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Android NDK Environment
         run: |
@@ -33,7 +33,7 @@ jobs:
           fi
 
       - name: Upload .so Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: arm64-v8a-libraries
           path: '**/libs/arm64-v8a/*.so'
