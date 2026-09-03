@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Setup Android NDK Environment
         run: |
@@ -28,7 +30,7 @@ jobs:
           if [ -n "$MK_PATH" ]; then
             JNI_DIR=$(cd "$(dirname "$MK_PATH")" && pwd)
             cd "$JNI_DIR"
-            $ANDROID_NDK_HOME/ndk-build APP_PLATFORM=android-21 NDK_APPLICATION_MK=Application.mk
+            $ANDROID_NDK_HOME/ndk-build NDK_APPLICATION_MK=Application.mk APP_PLATFORM=android-21
           else
             echo "Android.mk not found in repository"
             exit 1
